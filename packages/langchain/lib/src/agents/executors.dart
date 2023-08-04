@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../chains/chains.dart';
+import '../memory/memory.dart';
 import '../model_io/output_parsers/models/models.dart';
 import 'agent.dart';
 import 'models/models.dart';
@@ -27,7 +28,11 @@ class AgentExecutor extends BaseChain {
     this.maxExecutionTime,
     this.earlyStoppingMethod = AgentEarlyStoppingMethod.force,
     this.handleParsingErrors,
-  }) : _internalTools = [...tools, ExceptionTool()] {
+    final BaseMemory? memory,
+  })  : _internalTools = [...tools, ExceptionTool()],
+        super(
+          memory: memory ?? ConversationBufferMemory(),
+        ) {
     assert(
       _validateTools(),
       'Allowed tools different than provided tools',

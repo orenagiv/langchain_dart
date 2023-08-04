@@ -63,10 +63,10 @@ void main(final List<String> arguments) async {
           ''';
 
       // Store the Function response in memory.
-      memory.chatHistory.addFunctionChatMessage(
-        name: 'search_restaurants',
-        content: functionResponseContent,
-      );
+      // memory.chatHistory.addFunctionChatMessage(
+      //   name: 'search_restaurants',
+      //   content: functionResponseContent,
+      // );
 
       return functionResponseContent;
     },
@@ -95,27 +95,20 @@ void main(final List<String> arguments) async {
   final executor = AgentExecutor(
     agent: agent,
     tools: [searchRestaurantsTool],
+    memory: ConversationBufferMemory(),
   );
 
   while (true) {
     // Get user input.
     stdout.write('> ');
-    final query = stdin.readLineSync() ?? '';
-    final userMessage = ChatMessage.human(query);
-
-    // Add user input to memory.
-    memory.chatHistory.addUserChatMessage(userMessage.content.trim());
-    final messages = await memory.chatHistory.getChatMessages();
+    final input = stdin.readLineSync() ?? '';
 
     // Chat Complete by OpenAI.
-    final response = await executor.call(messages);
+    final response = await executor.call(input);
 
     final aiMessage = response['output'];
 
     // Output AI response message.
     stdout.writeln(aiMessage);
-
-    // Store AI response in memory.
-    memory.chatHistory.addAIChatMessage(aiMessage);
   }
 }
