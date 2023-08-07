@@ -24,7 +24,7 @@ void main() {
       final agent =
           OpenAIFunctionsAgent.fromLLMAndTools(llm: llm, tools: tools);
 
-      final executor = AgentExecutor(agent: agent, tools: tools);
+      final executor = AgentExecutor(agent: agent);
 
       final res = await executor.run('What is 40 raised to the 0.43 power? ');
 
@@ -63,26 +63,14 @@ void main() {
       );
       final tools = [tool];
 
+      final memory = ConversationBufferMemory(returnMessages: returnMessages);
       final agent = OpenAIFunctionsAgent.fromLLMAndTools(
         llm: llm,
         tools: tools,
-        extraPromptMessages: [
-          if (returnMessages)
-            const MessagesPlaceholder(variableName: BaseMemory.defaultMemoryKey)
-          else
-            HumanChatMessagePromptTemplate.fromTemplate(
-              'Previous conversation history:\n{${BaseMemory.defaultMemoryKey}}',
-            ),
-        ],
-      );
-
-      final memory = ConversationBufferMemory(returnMessages: returnMessages);
-
-      final executor = AgentExecutor(
-        agent: agent,
-        tools: tools,
         memory: memory,
       );
+
+      final executor = AgentExecutor(agent: agent);
 
       final res1 = await executor.run(
         'Search for cats. Return only 3 results.',
@@ -105,12 +93,15 @@ void main() {
       expect(res3, contains('Result 3'));
     }
 
-    test('Test OpenAIFunctionsAgent with string memory', () async {
-      await testMemory(returnMessages: false);
-    });
-
     test('Test OpenAIFunctionsAgent with messages memory', () async {
       await testMemory(returnMessages: true);
+    });
+
+    test('Test OpenAIFunctionsAgent with string memory throws error', () async {
+      expect(
+        () async => testMemory(returnMessages: false),
+        throwsA(isA<AssertionError>()),
+      );
     });
   });
 }

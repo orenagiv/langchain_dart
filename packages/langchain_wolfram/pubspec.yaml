@@ -5,12 +5,13 @@ repository: https://github.com/davidmigloz/langchain_dart/tree/main/packages/lan
 issue_tracker: https://github.com/davidmigloz/langchain_dart/issues
 homepage: https://github.com/davidmigloz/langchain_dart
 documentation: https://langchaindart.com
+publish_to: none # Remove when the package is ready to be published
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  langchain: ^0.0.3
+  langchain: ^0.0.5
   meta: ^1.9.1
 
 dev_dependencies:

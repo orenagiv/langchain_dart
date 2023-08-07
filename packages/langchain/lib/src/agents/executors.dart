@@ -11,28 +11,29 @@ import 'tools/invalid.dart';
 /// {@template agent_executor}
 /// A chain responsible for executing the actions of an agent using tools.
 /// It receives user input and passes it to the agent, which then decides which
-/// tool to use and what action to take.
+/// tool/s to use and what action/s to take.
 ///
 /// The [AgentExecutor] calls the specified tool with the generated input,
 /// retrieves the output, and passes it back to the agent to determine the next
 /// action. This process continues until the agent determines it can directly
 /// respond to the user or completes its task.
+///
+/// If you add [memory] to the [AgentExecutor], it will save the
+/// [AgentExecutor]'s inputs and outputs. It won't save the agent's
+/// intermediate inputs and outputs. If you want to save the agent's
+/// intermediate inputs and outputs, you should add [memory] to the agent
+/// instead.
 /// {@endtemplate}
 class AgentExecutor extends BaseChain {
   AgentExecutor({
     required this.agent,
-    required final List<BaseTool> tools,
     super.memory,
     this.returnIntermediateSteps = false,
     this.maxIterations = 15,
     this.maxExecutionTime,
     this.earlyStoppingMethod = AgentEarlyStoppingMethod.force,
     this.handleParsingErrors,
-  }) : _internalTools = [...tools, ExceptionTool()] {
-    assert(
-      _validateTools(),
-      'Allowed tools different than provided tools',
-    );
+  }) : _internalTools = [...agent.tools, ExceptionTool()] {
     assert(
       _validateMultiActionAgentTools(),
       'Tools that have `returnDirect=true` are not allowed in multi-action agents',
@@ -78,20 +79,6 @@ class AgentExecutor extends BaseChain {
         ...agent.returnValues,
         if (returnIntermediateSteps) intermediateStepsOutputKey,
       };
-
-  /// Validate that tools are compatible with agent.
-  bool _validateTools() {
-    final agent = this.agent;
-    final tools = _internalTools;
-    final allowedTools = agent.getAllowedTools();
-    if (allowedTools?.isNotEmpty ?? false) {
-      final providedTools = tools.map((final t) => t.name).toSet();
-      if (allowedTools!.difference(providedTools).isNotEmpty) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   /// Validate that tools are compatible with multi action agent.
   bool _validateMultiActionAgentTools() {
