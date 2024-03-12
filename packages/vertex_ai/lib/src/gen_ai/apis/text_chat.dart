@@ -58,6 +58,7 @@ class VertexAITextChatModelApi {
   ///   stable model version, specify the model version number
   ///   (e.g. `chat-bison@001`). You can find a list of available models here:
   ///   https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models
+  /// - [tuned] whether the model is a privately tuned model or not. If `true` it will ignore the [publisher] and adjust the path for tuned models (e.g. 'projects/$project/locations/$location/models/$model').
   /// - [parameters] parameters to use for the request.
   ///
   /// API documentation:
@@ -68,6 +69,7 @@ class VertexAITextChatModelApi {
     required final List<VertexAITextChatModelMessage> messages,
     final String publisher = 'google',
     final String model = 'chat-bison',
+    final bool tuned = false,
     final VertexAITextChatModelRequestParams parameters =
         const VertexAITextChatModelRequestParams(),
   }) async {
@@ -81,7 +83,9 @@ class VertexAITextChatModelApi {
     );
     final response = await _modelsApi.predict(
       request,
-      'projects/$project/locations/$location/publishers/$publisher/models/$model',
+      tuned
+          ? 'projects/$project/locations/$location/models/$model'
+          : 'projects/$project/locations/$location/publishers/$publisher/models/$model',
     );
     return VertexAITextChatModelGoogleApisMapper.mapResponse(response);
   }
@@ -103,12 +107,14 @@ class VertexAITextChatModelApi {
   ///   stable model version, specify the model version number
   ///   (e.g. `chat-bison@001`). You can find a list of available models here:
   ///   https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models
+  /// - [tuned] whether the model is a privately tuned model or not. If `true` it will ignore the [publisher] and adjust the path for tuned models (e.g. 'projects/$project/locations/$location/models/$model').
   Future<VertexAICountTokensResponse> countTokens({
     final String? context,
     final List<VertexAITextChatModelExample>? examples,
     required final List<VertexAITextChatModelMessage> messages,
     final String publisher = 'google',
     final String model = 'chat-bison',
+    final bool tuned = false,
   }) async {
     final request = VertexAICountTokensGoogleApisMapper.mapTextChatRequest(
       VertexAITextChatModelRequest(
@@ -120,7 +126,9 @@ class VertexAITextChatModelApi {
     );
     final response = await _modelsApi.countTokens(
       request,
-      'projects/$project/locations/$location/publishers/$publisher/models/$model',
+      tuned
+          ? 'projects/$project/locations/$location/models/$model'
+          : 'projects/$project/locations/$location/publishers/$publisher/models/$model',
     );
     return VertexAICountTokensGoogleApisMapper.mapResponse(response);
   }
