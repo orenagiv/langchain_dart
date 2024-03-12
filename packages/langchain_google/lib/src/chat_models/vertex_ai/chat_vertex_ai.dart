@@ -118,6 +118,7 @@ class ChatVertexAI extends BaseChatModel<ChatVertexAIOptions> {
     this.defaultOptions = const ChatVertexAIOptions(
       publisher: 'google',
       model: 'chat-bison',
+      tuned: false,
     ),
   }) : client = VertexAIGenAIClient(
           httpClient: httpClient,
@@ -163,6 +164,8 @@ class ChatVertexAI extends BaseChatModel<ChatVertexAIOptions> {
     final model =
         options?.model ?? defaultOptions.model ?? throwNullModelError();
 
+    final tuned = options?.tuned ?? false;
+
     final result = await client.chat.predict(
       context: context,
       examples: examples,
@@ -174,6 +177,7 @@ class ChatVertexAI extends BaseChatModel<ChatVertexAIOptions> {
             'VertexAIOptions.publisher',
           ),
       model: model,
+      tuned: tuned,
       parameters: VertexAITextChatModelRequestParams(
         maxOutputTokens:
             options?.maxOutputTokens ?? defaultOptions.maxOutputTokens ?? 1024,

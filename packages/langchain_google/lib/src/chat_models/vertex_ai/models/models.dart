@@ -8,6 +8,7 @@ class ChatVertexAIOptions extends ChatModelOptions {
   const ChatVertexAIOptions({
     this.publisher = 'google',
     this.model = 'chat-bison',
+    this.tuned = false,
     this.maxOutputTokens,
     this.temperature,
     this.topP,
@@ -32,6 +33,9 @@ class ChatVertexAIOptions extends ChatModelOptions {
   /// You can find a list of available models here:
   /// https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models
   final String? model;
+
+  /// Whether the model is privately tuned.
+  final bool tuned;
 
   /// Maximum number of tokens that can be generated in the response. A token
   /// is approximately four characters. 100 tokens correspond to roughly
@@ -106,6 +110,7 @@ class ChatVertexAIOptions extends ChatModelOptions {
   ChatVertexAIOptions copyWith({
     final String? publisher,
     final String? model,
+    final bool tuned = false,
     final int? maxOutputTokens,
     final double? temperature,
     final double? topP,
@@ -117,6 +122,7 @@ class ChatVertexAIOptions extends ChatModelOptions {
     return ChatVertexAIOptions(
       publisher: publisher ?? this.publisher,
       model: model ?? this.model,
+      tuned: tuned,
       maxOutputTokens: maxOutputTokens ?? this.maxOutputTokens,
       temperature: temperature ?? this.temperature,
       topP: topP ?? this.topP,
