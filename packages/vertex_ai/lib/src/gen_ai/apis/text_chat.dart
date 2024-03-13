@@ -107,7 +107,7 @@ class VertexAITextChatModelApi {
   ///   stable model version, specify the model version number
   ///   (e.g. `chat-bison@001`). You can find a list of available models here:
   ///   https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models
-  /// - [tuned] whether the model is a privately tuned model or not. If `true` it will ignore the [publisher] and adjust the path for tuned models (e.g. 'projects/$project/locations/$location/models/$model').
+  /// - [tuned] whether the model is a privately tuned model or not. If `true` it will ignore the [publisher] and adjust the path for tuned models endpoints (e.g. 'projects/$project/locations/$location/endpoints/$model').
   Future<VertexAICountTokensResponse> countTokens({
     final String? context,
     final List<VertexAITextChatModelExample>? examples,
@@ -127,7 +127,7 @@ class VertexAITextChatModelApi {
     final response = await _modelsApi.countTokens(
       request,
       tuned
-          ? 'projects/$project/locations/$location/models/$model'
+          ? 'projects/$project/locations/$location/endpoints/$model'
           : 'projects/$project/locations/$location/publishers/$publisher/models/$model',
     );
     return VertexAICountTokensGoogleApisMapper.mapResponse(response);
