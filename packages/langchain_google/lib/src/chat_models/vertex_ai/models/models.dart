@@ -35,7 +35,7 @@ class ChatVertexAIOptions extends ChatModelOptions {
   final String? model;
 
   /// Whether the model is privately tuned.
-  final bool tuned;
+  final bool? tuned;
 
   /// Maximum number of tokens that can be generated in the response. A token
   /// is approximately four characters. 100 tokens correspond to roughly

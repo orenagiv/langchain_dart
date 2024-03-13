@@ -164,7 +164,7 @@ class ChatVertexAI extends BaseChatModel<ChatVertexAIOptions> {
     final model =
         options?.model ?? defaultOptions.model ?? throwNullModelError();
 
-    final tuned = options?.tuned ?? false;
+    final tuned = options?.tuned ?? defaultOptions.tuned ?? false;
 
     final result = await client.chat.predict(
       context: context,
